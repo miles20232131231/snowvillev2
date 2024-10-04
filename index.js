@@ -6,47 +6,13 @@ const { Routes } = require("discord-api-types/v9");
 
 const { token } = process.env;
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.commands = new Collection();
 client.commandArray = [];
 
 // Ready event to log bot information
-client.once('ready', async () => {
+client.once('ready', () => {
   console.log(`${client.user?.username} - (${client.user?.id})`); // Log bot username and ID when ready
-
-  // User and role IDs
-  const targetChannelId = '1288822137905483797'; // Channel ID to send the message to
-  const targetUserId = '1291814730369073276'; // User ID to assign the role to
-  const roleId = '1284792034137346080'; // Replace with the role ID you want to assign
-
-  // Send message to the specified channel
-  const channel = await client.channels.fetch(targetChannelId);
-  if (channel) {
-    try {
-      // Send the message to the channel
-      await channel.send(`@everyone I NEED HELP, THIS IS A MESSAGE FROM ZYPHER, I need your help friend on my other account then I will explain`);
-
-      // Assign role to the user
-      const guild = channel.guild; // Get the guild from the channel
-      const member = await guild.members.fetch(targetUserId); // Fetch the member by user ID
-      
-      if (member) {
-        const role = guild.roles.cache.get(roleId); // Get the role by ID
-        if (role) {
-          await member.roles.add(role); // Add the role to the member
-          console.log("Role given"); // Log success
-        } else {
-          console.error(`Role not found: ${roleId}`);
-        }
-      } else {
-        console.error(`Member not found: ${targetUserId}`);
-      }
-    } catch (error) {
-      console.error('Error sending message or assigning role:', error);
-    }
-  } else {
-    console.error('Channel not found:', targetChannelId);
-  }
 });
 
 // Function to handle events
