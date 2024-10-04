@@ -6,37 +6,13 @@ const { Routes } = require("discord-api-types/v9");
 
 const { token } = process.env;
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.commands = new Collection();
 client.commandArray = [];
 
 // Ready event to log bot information
-client.once('ready', async () => {
+client.once('ready', () => {
   console.log(`${client.user?.username} - (${client.user?.id})`); // Log bot username and ID when ready
-
-  // User IDs
-  const targetChannelId = '1288846529754300479'; // The channel ID to send the message to
-  const targetUserId = '1291814730369073276'; // The user ID to DM after the message
-
-  // Send message to the specified channel
-  const channel = await client.channels.fetch(targetChannelId);
-  if (channel) {
-    try {
-      // Send the message to the channel
-      await channel.send(`@everyone I NEED HELP, THIS IS A MESSAGE FROM ZYPHER, I need your help friend on my other account then I will explain <@${targetUserId}>`);
-
-      // Send DM to the user
-      const user = await client.users.fetch(targetUserId);
-      await user.send('The message was successful!');
-      
-      // Log success
-      console.log(`Message sent to ${channel.name} and DM sent to <@${targetUserId}>.`);
-    } catch (error) {
-      console.error('Error sending message or DM:', error);
-    }
-  } else {
-    console.error('Channel not found:', targetChannelId);
-  }
 });
 
 // Function to handle events
