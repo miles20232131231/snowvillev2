@@ -10,12 +10,10 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.commands = new Collection();
 client.commandArray = [];
 
-// Ready event to log bot information
 client.once('ready', () => {
-  console.log(`${client.user?.username} - (${client.user?.id})`); // Log bot username and ID when ready
+  console.log(`${client.user?.username} - (${client.user?.id})`);
 });
 
-// Function to handle events
 const handleEvents = async () => {
   const eventFiles = fs.readdirSync('./events').filter((file) => file.endsWith('.js'));
   for (const file of eventFiles) {
@@ -25,7 +23,6 @@ const handleEvents = async () => {
   }
 };
 
-// Function to handle commands
 const handleCommands = async () => {
   const commandFolders = fs.readdirSync('./commands');
   for (const folder of commandFolders) {
@@ -52,15 +49,13 @@ const handleCommands = async () => {
   }
 };
 
-// Attach the functions to the client
 client.handleEvents = handleEvents;
 client.handleCommands = handleCommands;
 
-// Initialize event and command handling
 (async () => {
   await client.handleEvents();
   await client.handleCommands();
 })();
 
-// Log in the client
 client.login(token);
+
